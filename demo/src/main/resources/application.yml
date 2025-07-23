@@ -24,5 +24,5 @@ spring:
 
 # Outras configurações que você já tinha no application.yml (se houver)
 # Por exemplo, se você tinha algo assim:
-# server:
-#   port: 8080
+server:
+  port: ${PORT:8080}
