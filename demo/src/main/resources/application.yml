@@ -3,9 +3,9 @@
 spring:
      
   datasource:
-    url: jdbc:postgresql://localhost:5432/gerenciador_membros
-    username: postgres
-    password: 2505 # Não esqueça de colocar sua senha aqui!
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   main:
     allow-bean-definition-overriding: true
   jpa:
