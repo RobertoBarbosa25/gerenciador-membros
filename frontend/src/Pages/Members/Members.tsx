@@ -25,9 +25,9 @@ export const Members = () => {
     isLoading
   } = useMembersFilters();
 
-  useEffect(() => {
-    fetchPlayers();
-  }, [fetchPlayers]);
+    useEffect(() => {
+        fetchPlayers();
+    }, [fetchPlayers]);
 
   // Ordenação local (pode ser extraída para hook/util)
   const [orderBy, setOrderBy] = React.useState<'name' | 'memberClass' | 'resonance'>('name');
@@ -92,39 +92,39 @@ export const Members = () => {
   };
 
   // Limpar base de dados (pode ser extraído para hook)
-  const handleClearDatabase = async () => {
-    if (window.confirm("Tem certeza que deseja limpar TODA a base de dados de membros? Esta ação é irreversível!")) {
+    const handleClearDatabase = async () => {
+        if (window.confirm("Tem certeza que deseja limpar TODA a base de dados de membros? Esta ação é irreversível!")) {
       // Aqui pode-se usar o membrosApi.deleteAllMembros() se desejar
-      showSnackbar("Todos os membros foram removidos com sucesso!", "success");
+                showSnackbar("Todos os membros foram removidos com sucesso!", "success");
       fetchPlayers();
     }
   };
 
-  return (
-    <PageWrapper>
-      <Box
-        component={Paper}
-        sx={{
+    return (
+        <PageWrapper>
+            <Box
+                component={Paper}
+                sx={{
           backgroundColor: '#23272f',
           color: '#fff',
           maxWidth: 1200,
           width: '100%',
-          margin: 'auto',
+                    margin: 'auto',
           p: 0,
-          borderRadius: 2,
-          boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.4)',
-        }}
-      >
+                    borderRadius: 2,
+                    boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.4)',
+                }}
+            >
         <Box sx={{ p: { xs: 1, md: 3 } }}>
           {/* Header com filtros e média de ressonância */}
           <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 3, mb: 2, background: '#232b36', borderRadius: 3, px: 3, py: 2 }}>
             <Box sx={{ flex: 1, minWidth: 0 }}>
               <MemberListHeader
-                filter={filter}
+                    filter={filter}
                 setFilter={setFilter}
-                filterClass={filterClass}
+                    filterClass={filterClass}
                 setFilterClass={setFilterClass}
-                filterCla={filterCla}
+                    filterCla={filterCla}
                 setFilterCla={setFilterCla}
                 total={sortedPlayers.length}
                 page={0}
@@ -150,29 +150,29 @@ export const Members = () => {
           {/* Tabela */}
           <Box sx={{ width: '100%', overflowX: 'auto' }}>
             <Box sx={{ minWidth: 1000 }}>
-              <MembersTable
+                        <MembersTable
                 players={paginatedPlayers}
-                editingPlayerId={editingPlayerId}
-                tempPlayer={tempPlayer}
+                            editingPlayerId={editingPlayerId}
+                            tempPlayer={tempPlayer}
                 highlightedRow={null}
                 highlightType={null}
-                onEdit={handleEdit}
+                            onEdit={handleEdit}
                 onRemove={openConfirmation}
-                onChange={handleChange}
-                onSave={handleSaveEdit}
-                onCancel={handleCancelEdit}
+                            onChange={handleChange}
+                            onSave={handleSaveEdit}
+                            onCancel={handleCancelEdit}
                 disableActions={editLoading || removeLoading}
-                isLoading={isLoading}
-                orderBy={orderBy}
-                order={order}
-                handleSortRequest={handleSortRequest}
-              />
-            </Box>
+                            isLoading={isLoading}
+                            orderBy={orderBy}
+                            order={order}
+                            handleSortRequest={handleSortRequest}
+                        />
+                    </Box>
           </Box>
           {/* Paginação */}
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, width: '100%' }}>
-            <Pagination
-              count={totalPages}
+                    <Pagination
+                        count={totalPages}
               page={page}
               onChange={(_, value) => setPage(value)}
               color="primary"
@@ -183,18 +183,18 @@ export const Members = () => {
           </Box>
           {/* Botão */}
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2, width: '100%' }}>
-            <Button
-              onClick={handleClearDatabase}
-              color="error"
-              variant="contained"
-              aria-label="Limpar todos os membros"
+                        <Button
+                            onClick={handleClearDatabase}
+                            color="error"
+                            variant="contained"
+                            aria-label="Limpar todos os membros"
               sx={{ minWidth: 220 }}
-            >
-              Limpar Base de Dados (Todos)
-            </Button>
-          </Box>
-        </Box>
-      </Box>
+                        >
+                            Limpar Base de Dados (Todos)
+                        </Button>
+                    </Box>
+                </Box>
+            </Box>
       <MemberEditDialog
         open={!!editingPlayerId}
         tempPlayer={tempPlayer}
@@ -210,22 +210,22 @@ export const Members = () => {
         onClose={handleCloseConfirm}
         onConfirm={handleConfirmAction}
       />
-      <Snackbar
+            <Snackbar
         open={snackbarOpen || !!error}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity={snackbarSeverity}
-          sx={{ width: '100%' }}
-          variant="filled"
-          aria-live="polite"
-        >
+                autoHideDuration={6000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            >
+                <Alert
+                    onClose={handleCloseSnackbar}
+                    severity={snackbarSeverity}
+                    sx={{ width: '100%' }}
+                    variant="filled"
+                    aria-live="polite"
+                >
           {snackbarMessage || error}
-        </Alert>
-      </Snackbar>
-    </PageWrapper>
-  );
+                </Alert>
+            </Snackbar>
+        </PageWrapper>
+    );
 };

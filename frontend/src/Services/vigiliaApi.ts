@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { Partida } from '../Types/Rank';
 
-const API_URL_VIGILIA = 'http://localhost:8080/api/vigilia';
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const API_URL_VIGILIA = `${BASE_URL}/api/vigilia`;
 
 const vigiliaApi = {
   getSalas: async (): Promise<Partida[]> => {

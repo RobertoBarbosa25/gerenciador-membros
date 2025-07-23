@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { Partida, Player } from '../Types/Rank';
 
-const API_URL_PARTIDAS = 'http://localhost:8080/api/partidas';
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const API_URL_PARTIDAS = `${BASE_URL}/api/partidas`;
 
 const ritoApi = {
   getPartidas: async (): Promise<Partida[]> => {

@@ -3,8 +3,9 @@
 import axios from 'axios';
 import { Player, Partida } from '../Types/Rank'; // Importar Partida também
 
-const API_URL_MEMBROS = 'http://localhost:8080/api/membros';
-const API_URL_PARTIDAS = 'http://localhost:8080/api/partidas'; // Novo URL para partidas
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const API_URL_MEMBROS = `${BASE_URL}/api/membros`;
+const API_URL_PARTIDAS = `${BASE_URL}/api/partidas`; // Novo URL para partidas
 
 const membrosApi = {
     // --- Métodos para Membros (existentes) ---
