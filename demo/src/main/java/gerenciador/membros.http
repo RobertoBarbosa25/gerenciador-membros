@@ -1,0 +1,91 @@
+### 1. Inicializar as 10 Partidas (CHAMAR APENAS UMA VEZ!)
+# Este endpoint cria as 10 partidas iniciais ("Partida 1" a "Partida 10")
+# se elas ainda não existirem no seu banco de dados.
+POST http://localhost:8080/api/partidas/inicializar
+Authorization: Basic YWRtaW46MjUwNQ==
+Content-Type: application/json
+
+---
+
+### 2. Listar Todas as Partidas
+# Use este para ver todas as partidas criadas e seus IDs.
+GET http://localhost:8080/api/partidas
+Authorization: Basic YWRtaW46MjUwNQ==
+
+---
+
+### 3. Criar um Novo Membro (Se precisar de mais jogadores)
+# Se você já tiver membros suficientes no banco, pode pular esta parte.
+# Anote o "id" que é retornado na resposta para usar nos testes seguintes.
+POST http://localhost:8080/api/membros
+Authorization: Basic YWRtaW46MjUwNQ==
+Content-Type: application/json
+
+{
+    "nome": "batata potato",
+    "ressonancia": 3015,
+    "classe": "Guerreiro",
+    "telefone": "99999919999",
+    "cla": "Alfasa"
+}
+
+---
+
+POST http://localhost:8080/api/membros
+Authorization: Basic YWRtaW46MjUwNQ==
+Content-Type: application/json
+
+{
+    "nome": "Player Teste as",
+    "ressonancia": 3022,
+    "classe": "Mago",
+    "telefone": "88888888888",
+    "clan": "Beta"
+}
+
+---
+
+### 4. Adicionar Membros a uma Partida
+# SUBSTITUA {partidaId} pelo ID da partida (ex: 1, 2, etc.)
+# SUBSTITUA {membroId} pelo ID de um membro existente.
+PUT http://localhost:8080/api/partidas/1/membros/17
+Authorization: Basic YWRtaW46MjUwNQ==
+
+---
+
+# Adicionar outro membro à mesma partida
+PUT http://localhost:8080/api/partidas/1/membros/5
+Authorization: Basic YWRtaW46MjUwNQ==
+
+---
+
+# Testar limite de 8 jogadores:
+# Se a Partida 1 já tiver 8 membros, esta requisição deve retornar um erro 400 Bad Request.
+PUT http://localhost:8080/api/partidas/1/membros/4 # Use um ID de membro existente
+Authorization: Basic YWRtaW46MjUwNQ==
+
+---
+
+### 5. Remover Membro de uma Partida
+# SUBSTITUA {partidaId} e {membroId} pelos IDs corretos.
+DELETE http://localhost:8080/api/partidas/1/membros/1
+Authorization: Basic YWRtaW46MjUwNQ==
+
+---
+
+### 6. Criar uma Partida Customizada (Opcional)
+# Cria uma partida com um nome que você escolher.
+POST http://localhost:8080/api/partidas
+Authorization: Basic YWRtaW46MjUwNQ==
+Content-Type: application/json
+
+{
+    "nome": "passando dos limites"
+}
+
+---
+
+### 7. Deletar uma Partida (Opcional)
+# SUBSTITUA {id_da_partida_a_deletar} pelo ID da partida que você quer remover.
+DELETE http://localhost:8080/api/partidas/1
+Authorization: Basic YWRtaW46MjUwNQ==

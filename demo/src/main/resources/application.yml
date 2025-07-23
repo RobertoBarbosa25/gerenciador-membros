@@ -1,0 +1,28 @@
+# application.yml
+
+spring:
+     
+  datasource:
+    url: jdbc:postgresql://localhost:5432/gerenciador_membros
+    username: postgres
+    password: 2505 # Não esqueça de colocar sua senha aqui!
+  main:
+    allow-bean-definition-overriding: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+
+# Propriedades JWT
+# Note a identação para app:
+# 24 horas em milissegundos (86400000 ms = 24 * 60 * 60 * 1000)
+
+
+
+# Outras configurações que você já tinha no application.yml (se houver)
+# Por exemplo, se você tinha algo assim:
+# server:
+#   port: 8080
