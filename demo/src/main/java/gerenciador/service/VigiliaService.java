@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.annotation.PostConstruct;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,5 +81,10 @@ public class VigiliaService {
 
     public void inicializarSalasVigilia() {
         partidaService.inicializarPartidasVigilia();
+    }
+
+    @PostConstruct
+    public void initVigiliaSalas() {
+        inicializarSalasVigilia();
     }
 } 
