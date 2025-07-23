@@ -1,0 +1,32 @@
+/* src/index.css (ou seu arquivo CSS principal) */
+
+/* Animação para fade-in da tabela */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Animação para destaque verde (sucesso) */
+@keyframes highlightGreen {
+  0% { background-color: rgba(76, 175, 80, 0.4); } /* Verde forte */
+  100% { background-color: transparent; }
+}
+
+/* Animação para destaque vermelho (remoção) */
+@keyframes highlightRed {
+  0% { background-color: rgba(244, 67, 54, 0.4); } /* Vermelho forte */
+  100% { background-color: transparent; }
+}
+
+/* Opcional: classes CSS para aplicar as animações */
+.fade-in-animation {
+  animation: fadeIn 1s ease-out;
+}
+
+.highlight-green-animation {
+  animation: highlightGreen 1.5s ease-out forwards;
+}
+
+.highlight-red-animation {
+  animation: highlightRed 1.5s ease-out forwards;
+}
