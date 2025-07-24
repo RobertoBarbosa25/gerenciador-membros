@@ -14,4 +14,4 @@ RUN ./mvnw clean package -DskipTests
 EXPOSE 8080
 
 # Comando para rodar a aplicação
-CMD ["java", "-jar", "target/*.jar"] 
+CMD ["java", "-jar", "target/gerenciador-membros-0.0.1-SNAPSHOT.jar"] 
