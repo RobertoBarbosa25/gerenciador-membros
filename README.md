@@ -84,6 +84,3 @@ VITE_API_URL=http://localhost:8080
 - [Netlify Dashboard](https://app.netlify.com/)
 
 ---
-
-## Licença
-[MIT](LICENSE) 
