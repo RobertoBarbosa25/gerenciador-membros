@@ -1,82 +1,89 @@
 # Gerenciador de Membros
 
-## Descrição
-Sistema completo para gestão de membros, organização de salas (Rito e Vigilia), com backend em Spring Boot + PostgreSQL e frontend em React.
+Sistema completo para gestão de membros, partidas e vigílias, com frontend em React (Vite) e backend em Spring Boot.
 
 ---
 
-## Pré-requisitos
-- Java 17+
-- Maven 3.8+
-- Node.js 18+
-- PostgreSQL
+## Deploy
+
+- **Frontend:** [Netlify](https://www.netlify.com/)
+- **Backend:** [Render](https://render.com/)
 
 ---
 
-## Backend (Spring Boot)
+## Como rodar localmente
 
-### Instalação e Execução
-```sh
+### Pré-requisitos
+- Node.js (para o frontend)
+- Java 17+ e Maven (para o backend)
+- PostgreSQL (ou use o banco do Render)
+
+---
+
+### Backend (Spring Boot)
+
+```bash
 cd demo
-mvn clean install -DskipTests
-mvn spring-boot:run
+./mvnw spring-boot:run
 ```
 
-### Configuração do Banco de Dados
-Edite `demo/src/main/resources/application.yml` conforme seu ambiente:
-```yml
+**Variáveis de ambiente necessárias:**
+- `SPRING_DATASOURCE_URL`
+- `SPRING_DATASOURCE_USERNAME`
+- `SPRING_DATASOURCE_PASSWORD`
+- `SPRING_JPA_HIBERNATE_DDL_AUTO` (opcional, ex: `update`)
+
+Exemplo de configuração no `application.yml`:
+```yaml
+server:
+  port: ${PORT:8080}
+
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/gerenciador_membros
-    username: postgres
-    password: sua_senha
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
     show-sql: true
 ```
 
-### Documentação da API (Swagger)
-Acesse após iniciar o backend:
-- [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
-- [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
-
-Principais endpoints documentados:
-- `/api/partidas` — Gerenciamento de partidas do Rito
-- `/api/vigilia` — Gerenciamento de salas da Vigilia
-- `/api/membros` — Gerenciamento de membros
-
 ---
 
-## Frontend (React)
+### Frontend (React + Vite)
 
-### Instalação e Execução
-```sh
+```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-Acesse em: [http://localhost:5173](http://localhost:5173)
+**Variável de ambiente:**
+- `VITE_API_URL` (URL do backend, ex: `http://localhost:8080` ou a URL do Render)
+
+Crie um arquivo `.env` na pasta `frontend`:
+```
+VITE_API_URL=http://localhost:8080
+```
 
 ---
 
-## Funcionalidades
-- Gestão de membros (CRUD)
-- Organização de salas do Rito (10 partidas)
-- Organização de salas da Vigilia (12 salas)
-- Busca inteligente por nome (ignora acentos/case)
-- Feedback visual (toasts, loading)
-- Documentação automática da API (Swagger)
+## Deploy em Produção
+
+- **Backend:**  
+  Deploy automático no Render, usando Dockerfile na pasta `demo/`.
+- **Frontend:**  
+  Deploy automático no Netlify.  
+  Defina a variável de ambiente `VITE_API_URL` no painel do Netlify com a URL do backend Render.
 
 ---
 
-## Observações
-- Para editar nomes de partidas, não pode haver duplicidade (ignorando maiúsculas/minúsculas).
-- Para deletar partidas diretamente no banco, remova antes as referências em `partida_membros`.
-- O backend diferencia partidas do Rito e Vigilia pelo campo `tipo`.
+## Links úteis
+- [Render Dashboard](https://dashboard.render.com/)
+- [Netlify Dashboard](https://app.netlify.com/)
 
 ---
 
 ## Licença
-MIT 
+[MIT](LICENSE) 
