@@ -82,6 +82,10 @@ public class MembroService {
 
     @Transactional
     public void deleteAllMembros() {
+        // Primeiro, limpa a tabela de relacionamento partida_membros
+        membroRepository.clearPartidaMembros();
+        
+        // Agora pode deletar todos os membros
         membroRepository.deleteAll();
     }
 }

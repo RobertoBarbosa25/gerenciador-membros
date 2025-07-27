@@ -3,7 +3,7 @@
 import axios from 'axios';
 import { Player, Partida } from '../Types/Rank'; // Importar Partida também
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '' : 'http://localhost:8080');
 const API_URL_MEMBROS = `${BASE_URL}/api/membros`;
 const API_URL_PARTIDAS = `${BASE_URL}/api/partidas`; // Novo URL para partidas
 
@@ -45,7 +45,7 @@ const membrosApi = {
 
     deleteAllMembros: async (): Promise<void> => {
         try {
-            await axios.delete(API_URL_MEMBROS);
+            await axios.delete(`${API_URL_MEMBROS}/all`);
             console.log("Todos os membros foram deletados com sucesso no backend.");
         } catch (error) {
             console.error("Erro ao deletar todos os membros:", error);

@@ -1,7 +1,6 @@
-# application.yml
+application.yml
 
 spring:
-     
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
@@ -20,9 +19,19 @@ spring:
 # Note a identação para app:
 # 24 horas em milissegundos (86400000 ms = 24 * 60 * 60 * 1000)
 
-
-
-# Outras configurações que você já tinha no application.yml (se houver)
-# Por exemplo, se você tinha algo assim:
 server:
   port: ${PORT:8080}
+
+# Configurações para desenvolvimento local (descomente para usar):
+# spring:
+#   datasource:
+#     url: jdbc:postgresql://localhost:5432/gerenciador_membros
+#     username: postgres
+#     password: 2505
+#   jpa:
+#     hibernate:
+#       ddl-auto: update
+#     show-sql: true
+# 
+# server:
+#   port: 8080 

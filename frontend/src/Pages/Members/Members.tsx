@@ -13,6 +13,7 @@ import { useSnackbar } from './hooks/useSnackbar';
 import { getAverageResonance, getClaData } from './utils';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
 import { useState } from 'react';
+import membrosApi from '../../Services/membrosApi';
 
 export const Members = () => {
   const {
@@ -94,11 +95,16 @@ export const Members = () => {
   // Limpar base de dados (pode ser extraído para hook)
     const handleClearDatabase = async () => {
         if (window.confirm("Tem certeza que deseja limpar TODA a base de dados de membros? Esta ação é irreversível!")) {
-      // Aqui pode-se usar o membrosApi.deleteAllMembros() se desejar
+            try {
+                await membrosApi.deleteAllMembros();
                 showSnackbar("Todos os membros foram removidos com sucesso!", "success");
-      fetchPlayers();
-    }
-  };
+                fetchPlayers();
+            } catch (error) {
+                console.error("Erro ao limpar base de dados:", error);
+                showSnackbar("Erro ao limpar base de dados. Tente novamente.", "error");
+            }
+        }
+    };
 
     return (
         <PageWrapper>

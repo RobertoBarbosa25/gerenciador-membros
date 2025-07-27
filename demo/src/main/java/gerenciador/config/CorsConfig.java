@@ -1,6 +1,5 @@
 package gerenciador.config;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -16,10 +15,12 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("/api/**") 
-                        .allowedOrigins("http://localhost:5173", "http://localhost:3000","https://chernobyldiablo.netlify.app") // Permite requisições APENAS do seu frontend
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") 
+                        .allowedOriginPatterns("*") // Mais permissivo para desenvolvimento
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH") 
                         .allowedHeaders("*") 
-                        .allowCredentials(true); 
+                        .exposedHeaders("Authorization", "Content-Type", "X-Requested-With")
+                        .allowCredentials(true)
+                        .maxAge(3600); // Cache preflight por 1 hora
             }
         };
     }

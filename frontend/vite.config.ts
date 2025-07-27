@@ -9,6 +9,13 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
   preview: {
     port: 3000,
@@ -17,5 +24,4 @@ export default defineConfig({
     'process.env': process.env,
     global: 'window',
   },
-  
 });

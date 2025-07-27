@@ -1,0 +1,3 @@
+# Arquivos de configuração local
+/demo/src/main/resources/application-dev.yml
+/frontend/.env.local 

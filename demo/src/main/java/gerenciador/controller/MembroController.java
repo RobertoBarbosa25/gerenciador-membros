@@ -15,7 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/membros")
-@CrossOrigin(origins = "http://localhost:3000") // Verifique esta porta, o frontend geralmente usa 3000 ou 5173
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:3000", "https://chernobyldiablo.netlify.app"})
 @Tag(name = "Membros", description = "Endpoints para gerenciamento de membros do sistema")
 public class MembroController {
 
@@ -82,7 +82,7 @@ public class MembroController {
         return membroService.searchMembros(name, memberClass, cla);
     }
 
-    @DeleteMapping 
+    @DeleteMapping("/all")
     public ResponseEntity<Void> deleteAllMembros() {
         try {
             membroService.deleteAllMembros(); 
@@ -90,7 +90,9 @@ public class MembroController {
         } catch (Exception e) {
             System.err.println("Erro ao tentar deletar todos os membros: " + e.getMessage());
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .header("X-Error-Message", e.getMessage())
+                .build();
         }
     }
 }
