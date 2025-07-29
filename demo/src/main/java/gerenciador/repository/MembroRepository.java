@@ -1,6 +1,8 @@
 package gerenciador.repository;
 
 import gerenciador.model.Membro; // Importe a classe Membro
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.Modifying;
@@ -18,6 +20,12 @@ public interface MembroRepository extends JpaRepository<Membro, Long> {
      List<Membro> findByMemberClassIgnoreCase(String memberClass);
      List<Membro> findByClaIgnoreCase(String cla);
      List<Membro> findByMemberClassIgnoreCaseAndClaIgnoreCase(String memberClass, String cla);
+     
+     // NOVOS: Métodos paginados
+     Page<Membro> findByNameContainingIgnoreCase(String name, Pageable pageable);
+     Page<Membro> findByMemberClassIgnoreCase(String memberClass, Pageable pageable);
+     Page<Membro> findByClaIgnoreCase(String cla, Pageable pageable);
+     
      @Query(value = "SELECT * FROM membros m WHERE unaccent(lower(m.name)) LIKE unaccent(lower(concat('%', :name, '%')))", nativeQuery = true)
      List<Membro> searchByNameUnaccent(@Param("name") String name);
 

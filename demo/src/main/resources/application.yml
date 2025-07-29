@@ -17,11 +17,13 @@ server:
   port: ${PORT:8080}
 
 # Configurações para desenvolvimento local:
+# ⚠️ ATENÇÃO: Esta senha é apenas para desenvolvimento local
+# Para produção, use variáveis de ambiente (comentado acima)
 # spring:
 #   datasource:
 #     url: jdbc:postgresql://localhost:5432/gerenciador_membros
 #     username: postgres
-#     password: 2505
+#     password: 2505  # Senha local - NÃO usar em produção!
 #   main:
 #     allow-bean-definition-overriding: true
 #   jpa:

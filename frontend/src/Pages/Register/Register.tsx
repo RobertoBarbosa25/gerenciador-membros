@@ -14,6 +14,7 @@ import {
   Divider,
   Snackbar,
   Alert,
+  LinearProgress,
 } from '@mui/material';
 import { Player } from '../../Types/Rank';
 import { SelectChangeEvent } from '@mui/material/Select';
@@ -46,6 +47,10 @@ export const Register = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error' | 'info' | 'warning'>('success');
+
+  // *** NOVO ESTADO PARA PROGRESS BAR ***
+  const [importProgress, setImportProgress] = useState(0);
+  const [isImporting, setIsImporting] = useState(false);
 
   // *** FUNÇÕES DO SNACKBAR ***
   const showSnackbar = (message: string, severity: 'success' | 'error' | 'info' | 'warning') => {
@@ -114,8 +119,16 @@ export const Register = () => {
   };
 
   const handleCSVUploadChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsImporting(true);
+    setImportProgress(0);
+    
     handleCSVImport(event, showSnackbar, () => {
-        // Callback opcional após a importação do CSV
+        // Callback após a importação do CSV
+        setIsImporting(false);
+        setImportProgress(0);
+    }, (progress: number) => {
+        // Callback de progresso
+        setImportProgress(progress);
     });
   };
 
@@ -369,16 +382,57 @@ export const Register = () => {
               onChange={handleCSVUploadChange}
             />
             <label htmlFor="upload-csv">
-              <Button variant="contained" component="span" color="secondary" sx={{
-                backgroundColor: '#ff5722',
-                '&:hover': {
-                  backgroundColor: '#ff3d00',
-                },
-              }}>
-                Importar Jogadores (CSV)
+              <Button 
+                variant="contained" 
+                component="span" 
+                color="secondary" 
+                disabled={isImporting}
+                sx={{
+                  backgroundColor: '#ff5722',
+                  '&:hover': {
+                    backgroundColor: '#ff3d00',
+                  },
+                  '&:disabled': {
+                    backgroundColor: '#666',
+                    color: '#999',
+                  },
+                }}
+              >
+                {isImporting ? 'Importando...' : 'Importar Jogadores (CSV)'}
               </Button>
             </label>
           </FormControl>
+
+          {/* *** PROGRESS BAR *** */}
+          {isImporting && (
+            <Box sx={{ width: '100%', mt: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                <Box sx={{ width: '100%', mr: 1 }}>
+                  <LinearProgress 
+                    variant="determinate" 
+                    value={importProgress} 
+                    sx={{
+                      backgroundColor: '#444',
+                      '& .MuiLinearProgress-bar': {
+                        backgroundColor: '#ffff00',
+                      },
+                    }}
+                  />
+                </Box>
+                <Box sx={{ minWidth: 35 }}>
+                  <Typography variant="body2" color="text.secondary" sx={{ color: '#ffff00' }}>
+                    {Math.round(importProgress)}%
+                  </Typography>
+                </Box>
+              </Box>
+              <Typography variant="caption" sx={{ color: '#ffff00' }}>
+                {importProgress < 25 && 'Validando arquivo...'}
+                {importProgress >= 25 && importProgress < 75 && 'Processando dados...'}
+                {importProgress >= 75 && importProgress < 100 && 'Enviando para servidor...'}
+                {importProgress === 100 && 'Concluído!'}
+              </Typography>
+            </Box>
+          )}
         </Box>
         <Box
           component="img"

@@ -5,10 +5,122 @@ import { Player } from '../../Types/Rank';
 
 type ShowSnackbarFn = (message: string, severity: 'success' | 'error' | 'info' | 'warning') => void;
 
+// --- NOVAS FUNÇÕES DE VALIDAÇÃO ---
+interface CSVValidationResult {
+    isValid: boolean;
+    errors: string[];
+    warnings: string[];
+    preview: Omit<Player, 'id'>[];
+    totalLines: number;
+    validLines: number;
+}
+
+const validateCSVFormat = (lines: string[]): CSVValidationResult => {
+    const result: CSVValidationResult = {
+        isValid: true,
+        errors: [],
+        warnings: [],
+        preview: [],
+        totalLines: lines.length,
+        validLines: 0
+    };
+
+    if (lines.length === 0) {
+        result.errors.push("Arquivo CSV está vazio");
+        result.isValid = false;
+        return result;
+    }
+
+    // Verificar cabeçalho (primeira linha)
+    const header = lines[0];
+    const expectedColumns = ['Timestamp', 'Nome', 'Classe', 'Ressonância', 'Telefone', 'Discord ID', 'Clã'];
+    const actualColumns = header.split(',').map(col => col.trim());
+    
+    if (actualColumns.length < 7) {
+        result.errors.push(`Formato inválido: esperado pelo menos 7 colunas, encontrado ${actualColumns.length}`);
+        result.isValid = false;
+    }
+
+    // Validar dados (pular primeira linha)
+    for (let i = 1; i < lines.length; i++) {
+        const line = lines[i];
+        const lineNumber = i + 1;
+        
+        if (!line.trim()) {
+            result.warnings.push(`Linha ${lineNumber}: linha vazia, ignorada`);
+            continue;
+        }
+
+        const columns = line.split(',');
+        
+        if (columns.length < 7) {
+            result.errors.push(`Linha ${lineNumber}: formato inválido (${columns.length} colunas)`);
+            continue;
+        }
+
+        // Extrair dados
+        const name = columns[1]?.trim();
+        const memberClass = columns[2]?.trim();
+        const resonanceStr = columns[3]?.trim();
+        const phone = columns[4]?.trim() || '';
+        const discordId = columns[5]?.trim() || '';
+        const cla = columns[6]?.trim();
+
+        // Validações
+        if (!name || name.length < 2) {
+            result.errors.push(`Linha ${lineNumber}: nome inválido ou muito curto`);
+            continue;
+        }
+
+        if (!memberClass) {
+            result.errors.push(`Linha ${lineNumber}: classe não especificada`);
+            continue;
+        }
+
+        const resonance = parseFloat(resonanceStr || '0');
+        if (isNaN(resonance) || resonance <= 0) {
+            result.errors.push(`Linha ${lineNumber}: ressonância inválida (${resonanceStr})`);
+            continue;
+        }
+
+        if (resonance > 100000) {
+            result.warnings.push(`Linha ${lineNumber}: ressonância muito alta (${resonance}), verificar se está correto`);
+        }
+
+        if (!cla) {
+            result.errors.push(`Linha ${lineNumber}: clã não especificado`);
+            continue;
+        }
+
+        // Adicionar à preview (máximo 5 linhas)
+        if (result.preview.length < 5) {
+            result.preview.push({
+                name,
+                resonance,
+                memberClass: memberClass as Player['memberClass'],
+                phone,
+                discordId,
+                cla: cla as Player['cla']
+            });
+        }
+
+        result.validLines++;
+    }
+
+    // Verificar se há dados válidos
+    if (result.validLines === 0) {
+        result.errors.push("Nenhuma linha válida encontrada no arquivo");
+        result.isValid = false;
+    }
+
+    return result;
+};
+
 export const handleCSVUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
     showSnackbar: ShowSnackbarFn,
-    onUploadComplete?: () => void
+    onUploadComplete?: () => void,
+    onProgress?: (progress: number) => void
 ) => {
     const file = event.target.files?.[0];
 
@@ -23,74 +135,112 @@ export const handleCSVUpload = async (
         const text = e.target?.result as string;
         const lines = text.split('\n').filter(line => line.trim() !== '');
 
-        if (lines.length === 0) {
-            showSnackbar("O arquivo CSV está vazio.", "warning");
+        // --- VALIDAÇÃO DO CSV ---
+        showSnackbar("Validando arquivo CSV...", "info");
+        const validation = validateCSVFormat(lines);
+        
+        if (!validation.isValid) {
+            showSnackbar(`Arquivo inválido: ${validation.errors[0]}`, "error");
+            console.error("Erros de validação:", validation.errors);
             return;
         }
 
-        // Pular a primeira linha (geralmente o cabeçalho)
-        // Se o seu CSV do Google Forms tem um cabeçalho na primeira linha (ex: "Carimbo de data/hora,Nome,..."),
-        // a linha `lines.slice(1)` abaixo o removerá.
-        const dataLines = lines.slice(1);
-
-        if (dataLines.length === 0) {
-            showSnackbar("O arquivo CSV não contém dados após o cabeçalho.", "warning");
-            return;
+        if (validation.warnings.length > 0) {
+            console.warn("Avisos de validação:", validation.warnings);
         }
 
-        let successCount = 0;
-        let newCount = 0;
-        let updateCount = 0;
-        let errorCount = 0;
+        // Mostrar preview
+        console.log("Preview dos dados:", validation.preview);
+        showSnackbar(`Arquivo válido! ${validation.validLines} membros serão importados.`, "success");
 
-        for (const line of dataLines) {
+        // --- PROCESSAMENTO DOS DADOS VÁLIDOS ---
+        const membrosParaImportar: Omit<Player, 'id'>[] = [];
+        let linhasInvalidas = 0;
+
+        // Pular primeira linha (cabeçalho) e processar apenas linhas válidas
+        for (let i = 1; i < lines.length; i++) {
+            const line = lines[i];
+            
+            if (!line.trim()) continue;
+
             const columns = line.split(',');
 
-            // --- CORREÇÃO CRÍTICA: Mapeamento de Colunas Ajustado ---
-            // Ignorando columns[0] (Timestamp) e pegando os dados a partir de columns[1]
-            const name = columns[1]?.trim();                 // Nome agora é o índice [1]
-            const memberClass = columns[2]?.trim() as Player['memberClass']; // Classe é o índice [2]
-            const resonance = parseFloat(columns[3]?.trim() || '0'); // Ressonância é o índice [3]
-            const phone = columns[4]?.trim();                // Telefone é o índice [4]
-            const discordId = columns[5]?.trim();            // Discord ID é o índice [5]
-            const cla = columns[6]?.trim() as Player['cla']; // Clã é o índice [6]
-            // --- FIM DA CORREÇÃO ---
+            // Mapeamento de colunas
+            const name = columns[1]?.trim();
+            const memberClass = columns[2]?.trim() as Player['memberClass'];
+            const resonance = parseFloat(columns[3]?.trim() || '0');
+            const phone = columns[4]?.trim() || '';
+            const discordId = columns[5]?.trim() || '';
+            const cla = columns[6]?.trim() as Player['cla'];
 
-            // Console.log para depuração: Verifique os valores após o mapeamento
-            console.log("Valores processados para a linha:", { name, memberClass, resonance, phone, discordId, cla });
-
-            // Validação: Garante que os campos obrigatórios não estão vazios/inválidos
+            // Validação final
             if (!name || isNaN(resonance) || !memberClass || !cla) {
-                console.warn(`Linha ignorada devido a dados incompletos ou inválidos: ${line}`);
-                errorCount++;
+                linhasInvalidas++;
                 continue;
             }
 
-            const newPlayerPartial: Omit<Player, 'id'> = {
+            membrosParaImportar.push({
                 name,
                 resonance,
                 memberClass,
-                phone: phone || '', // Garante string vazia se nulo/undefined
-                discordId: discordId || '', // Garante string vazia se nulo/undefined
+                phone,
+                discordId,
                 cla,
-            };
+            });
 
-            try {
-                await membrosApi.createMembro(newPlayerPartial);
-                newCount++;
-                successCount++;
-            } catch (createError: any) {
-                console.error(`Erro ao processar jogador ${name}:`, createError);
-                errorCount++;
+            // Atualizar progresso
+            if (onProgress) {
+                const progress = ((i + 1) / lines.length) * 50; // 50% para processamento
+                onProgress(progress);
             }
         }
 
-        if (successCount > 0) {
-            showSnackbar(`Importação concluída! ${newCount} novos membros cadastrados, ${errorCount} erros.`, "success");
-        } else if (errorCount > 0) {
-            showSnackbar(`Importação concluída com ${errorCount} erros. Verifique o console para detalhes.`, "error");
-        } else {
-            showSnackbar("Nenhum membro foi processado. Verifique o formato do arquivo CSV.", "info");
+        if (membrosParaImportar.length === 0) {
+            showSnackbar("Nenhum membro válido encontrado no arquivo CSV.", "warning");
+            return;
+        }
+
+        try {
+            // --- CHAMADA ÚNICA PARA O BACKEND ---
+            showSnackbar(`Enviando ${membrosParaImportar.length} membros para o servidor...`, "info");
+            if (onProgress) onProgress(75); // 75% para envio
+            
+            const result = await membrosApi.importMembrosBatch(membrosParaImportar);
+            
+            if (onProgress) onProgress(100); // 100% concluído
+            
+            // Construir mensagem de resultado
+            let message = `Importação concluída! `;
+            if (result.successCount > 0) {
+                message += `${result.successCount} novos membros cadastrados. `;
+            }
+            if (result.skippedCount > 0) {
+                message += `${result.skippedCount} membros já existentes (ignorados). `;
+            }
+            if (result.errorCount > 0) {
+                message += `${result.errorCount} erros. `;
+            }
+            if (linhasInvalidas > 0) {
+                message += `${linhasInvalidas} linhas com dados inválidos. `;
+            }
+
+            const severity = result.errorCount > 0 ? "warning" : "success";
+            showSnackbar(message, severity);
+
+            // Log detalhado no console para debug
+            if (result.successNames.length > 0) {
+                console.log("Membros importados com sucesso:", result.successNames);
+            }
+            if (result.skippedNames.length > 0) {
+                console.log("Membros ignorados (já existem):", result.skippedNames);
+            }
+            if (result.errorMessages.length > 0) {
+                console.error("Erros durante importação:", result.errorMessages);
+            }
+
+        } catch (error: any) {
+            console.error("Erro na importação em lote:", error);
+            showSnackbar("Erro ao importar membros. Verifique o console para detalhes.", "error");
         }
 
         if (onUploadComplete) {

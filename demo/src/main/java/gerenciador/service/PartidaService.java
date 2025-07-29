@@ -145,4 +145,24 @@ public class PartidaService {
         }
         return Optional.empty();
     }
+
+    // --- MÉTODOS DE ESTATÍSTICAS PARA DASHBOARD ---
+    
+    public long getTotalPartidasRito() {
+        return partidaRepository.findAll().stream()
+            .filter(p -> TIPO_RITO.equals(p.getTipo()))
+            .count();
+    }
+    
+    public long getTotalPartidasVigilia() {
+        return partidaRepository.findAll().stream()
+            .filter(p -> TIPO_VIGILIA.equals(p.getTipo()))
+            .count();
+    }
+    
+    public long getPartidasOcupadas() {
+        return partidaRepository.findAll().stream()
+            .filter(p -> !p.getMembros().isEmpty())
+            .count();
+    }
 }

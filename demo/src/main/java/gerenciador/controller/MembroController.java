@@ -4,6 +4,10 @@ import gerenciador.model.Membro;
 import gerenciador.repository.MembroRepository;
 import gerenciador.service.MembroService; // <--- IMPORTANTE: Importe o MembroService
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,11 +34,27 @@ public class MembroController {
     }
     // --- FIM DAS MUDANÇAS ---
 
-
-    // Endpoint para LISTAR todos os membros
+    // Endpoint para LISTAR todos os membros (mantido para compatibilidade)
     @GetMapping
     public List<Membro> getAllMembros() {
-        return membroService.getAllMembros(); // <--- CHAME O SERVIÇO AQUI TAMBÉM
+        return membroService.getAllMembros();
+    }
+
+    // NOVO: Endpoint paginado para melhor performance
+    @GetMapping("/paginated")
+    @Operation(summary = "Listar membros com paginação", description = "Retorna membros paginados para melhor performance")
+    public ResponseEntity<Page<Membro>> getMembrosPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        
+        Sort.Direction direction = sortDir.equalsIgnoreCase("desc") ? 
+            Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        
+        Page<Membro> membros = membroService.getMembrosPaginated(pageable);
+        return ResponseEntity.ok(membros);
     }
 
     // Endpoint para OBTER um membro por ID
@@ -63,7 +83,7 @@ public class MembroController {
         }
     }
 
-    
+    // Endpoint para DELETAR um membro
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMembro(@PathVariable Long id) {
         try {
@@ -80,6 +100,44 @@ public class MembroController {
                                       @RequestParam(required = false) String memberClass,
                                       @RequestParam(required = false) String cla) {
         return membroService.searchMembros(name, memberClass, cla);
+    }
+
+    // NOVO: Busca paginada com filtros
+    @GetMapping("/buscar/paginated")
+    @Operation(summary = "Buscar membros com filtros e paginação", description = "Busca paginada de membros com filtros")
+    public ResponseEntity<Page<Membro>> searchMembrosPaginated(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String memberClass,
+            @RequestParam(required = false) String cla,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name"));
+        Page<Membro> membros = membroService.searchMembrosPaginated(name, memberClass, cla, pageable);
+        return ResponseEntity.ok(membros);
+    }
+
+    // Endpoint para importação em lote (já implementado)
+    @PostMapping("/batch")
+    public ResponseEntity<MembroService.BatchImportResult> importMembrosBatch(@RequestBody List<Membro> membros) {
+        MembroService.BatchImportResult result = membroService.importMembrosBatch(membros);
+        return ResponseEntity.ok(result);
+    }
+
+    // NOVO: Endpoint para exportar membros em CSV
+    @GetMapping("/export/csv")
+    @Operation(summary = "Exportar membros em CSV", description = "Exporta todos os membros em formato CSV")
+    public ResponseEntity<String> exportMembrosCSV() {
+        try {
+            String csvContent = membroService.exportMembrosToCSV();
+            return ResponseEntity.ok()
+                .header("Content-Type", "text/csv")
+                .header("Content-Disposition", "attachment; filename=\"membros.csv\"")
+                .body(csvContent);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Erro ao exportar CSV: " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/all")

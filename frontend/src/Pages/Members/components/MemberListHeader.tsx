@@ -11,11 +11,13 @@ interface MemberListHeaderProps {
   setFilterCla: (value: string) => void;
   total: number;
   page: number;
+  isLoading?: boolean; // NOVO: Prop para loading
   onClearDatabase?: () => void; // agora opcional
 }
 
 export const MemberListHeader: React.FC<MemberListHeaderProps> = ({
-  filter, setFilter, filterClass, setFilterClass, filterCla, setFilterCla, total, page, onClearDatabase
+  filter, setFilter, filterClass, setFilterClass, filterCla, setFilterCla, 
+  total, page, isLoading = false, onClearDatabase // NOVO: isLoading
 }) => (
   <Box mb={2}>
     <MembersFilters
@@ -25,6 +27,7 @@ export const MemberListHeader: React.FC<MemberListHeaderProps> = ({
       setFilterClass={setFilterClass}
       filterCla={filterCla}
       setFilterCla={setFilterCla}
+      isLoading={isLoading} // NOVO: Passar loading
     />
     <Typography variant="body2" sx={{ color: '#aaa', mb: 1 }}>
       Exibindo {total} membros (página {page + 1})

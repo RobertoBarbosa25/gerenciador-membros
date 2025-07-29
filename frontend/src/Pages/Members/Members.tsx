@@ -16,6 +16,8 @@ import { useState } from 'react';
 import membrosApi from '../../Services/membrosApi';
 
 export const Members = () => {
+  console.log('🔄 Componente Members renderizado');
+  
   const {
     filter, setFilter,
     filterClass, setFilterClass,
@@ -25,10 +27,6 @@ export const Members = () => {
     fetchPlayers,
     isLoading
   } = useMembersFilters();
-
-    useEffect(() => {
-        fetchPlayers();
-    }, [fetchPlayers]);
 
   // Ordenação local (pode ser extraída para hook/util)
   const [orderBy, setOrderBy] = React.useState<'name' | 'memberClass' | 'resonance'>('name');
@@ -92,12 +90,13 @@ export const Members = () => {
     setOrderBy(property);
   };
 
-  // Limpar base de dados (pode ser extraído para hook)
+      // Limpar base de dados (pode ser extraído para hook)
     const handleClearDatabase = async () => {
         if (window.confirm("Tem certeza que deseja limpar TODA a base de dados de membros? Esta ação é irreversível!")) {
             try {
                 await membrosApi.deleteAllMembros();
                 showSnackbar("Todos os membros foram removidos com sucesso!", "success");
+                // Recarregar dados do backend
                 fetchPlayers();
             } catch (error) {
                 console.error("Erro ao limpar base de dados:", error);
@@ -126,14 +125,15 @@ export const Members = () => {
           <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 3, mb: 2, background: '#232b36', borderRadius: 3, px: 3, py: 2 }}>
             <Box sx={{ flex: 1, minWidth: 0 }}>
               <MemberListHeader
-                    filter={filter}
+                filter={filter}
                 setFilter={setFilter}
-                    filterClass={filterClass}
+                filterClass={filterClass}
                 setFilterClass={setFilterClass}
-                    filterCla={filterCla}
+                filterCla={filterCla}
                 setFilterCla={setFilterCla}
                 total={sortedPlayers.length}
                 page={0}
+                isLoading={isLoading} // NOVO: Passar estado de loading
               />
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1, minWidth: 120 }}>

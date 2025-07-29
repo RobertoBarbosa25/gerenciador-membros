@@ -17,6 +17,9 @@ const membrosApi = {
             if (filters.memberClass) params.append('memberClass', filters.memberClass);
             if (filters.cla) params.append('cla', filters.cla);
             url += `/buscar?${params.toString()}`;
+            console.log('🔍 API: getMembros com filtros:', filters);
+        } else {
+            console.log('📋 API: getMembros sem filtros (todos os membros)');
         }
         const response = await axios.get<Record<string, Player> | Player[]>(url, { signal });
         if (typeof response.data === 'object' && response.data !== null && !Array.isArray(response.data)) {
@@ -41,6 +44,19 @@ const membrosApi = {
 
     deleteMembro: async (id: number): Promise<void> => {
         await axios.delete(`${API_URL_MEMBROS}/${id}`);
+    },
+
+    // --- NOVO MÉTODO: Importação em Lote ---
+    importMembrosBatch: async (membros: Omit<Player, 'id'>[]): Promise<{
+        successCount: number;
+        skippedCount: number;
+        errorCount: number;
+        successNames: string[];
+        skippedNames: string[];
+        errorMessages: string[];
+    }> => {
+        const response = await axios.post(`${API_URL_MEMBROS}/batch`, membros);
+        return response.data;
     },
 
     deleteAllMembros: async (): Promise<void> => {
