@@ -3,6 +3,11 @@ import axios from 'axios';
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 const API_URL = `${BASE_URL}/api/batch`;
 
+// Debug: verificar se a variável está sendo carregada
+console.log('🔧 VITE_API_URL:', import.meta.env.VITE_API_URL);
+console.log('🔧 BASE_URL:', BASE_URL);
+console.log('🔧 API_URL:', API_URL);
+
 export const batchApi = {
   // Teste simples para verificar se o controller está funcionando
   teste: async () => {
