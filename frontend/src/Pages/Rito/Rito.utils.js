@@ -1,1 +1,0 @@
-export const MAX_ATTACK_PLAYERS = 8;

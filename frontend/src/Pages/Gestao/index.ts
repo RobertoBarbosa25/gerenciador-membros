@@ -1,1 +1,1 @@
-export * from './Gestao';
+export { Gestao } from './Gestao'; 

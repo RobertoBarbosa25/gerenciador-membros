@@ -216,14 +216,18 @@ export const MembersTable: React.FC<MembersTableProps> = ({
                   </TableCell>
                   <TableCell sx={{ ...baseTableCellSx, textAlign: 'right' }}>
                     <Tooltip title="Salvar">
-                      <IconButton onClick={onSave} disabled={disableActions}>
-                        <span role="img" aria-label="salvar">💾</span>
-                      </IconButton>
+                      <span>
+                        <IconButton onClick={onSave} disabled={disableActions}>
+                          <span role="img" aria-label="salvar">💾</span>
+                        </IconButton>
+                      </span>
                     </Tooltip>
                     <Tooltip title="Cancelar">
-                      <IconButton onClick={onCancel} disabled={disableActions}>
-                        <span role="img" aria-label="cancelar">❌</span>
-                      </IconButton>
+                      <span>
+                        <IconButton onClick={onCancel} disabled={disableActions}>
+                          <span role="img" aria-label="cancelar">❌</span>
+                        </IconButton>
+                      </span>
                     </Tooltip>
                   </TableCell>
                 </TableRow>
@@ -268,14 +272,18 @@ export const MembersTable: React.FC<MembersTableProps> = ({
                   <TableCell sx={{ ...baseTableCellSx, textAlign: 'center', width: 120 }}>{player.cla}</TableCell>
                   <TableCell sx={{ ...baseTableCellSx, textAlign: 'right', width: 90 }}>
                     <Tooltip title="Editar">
-                      <IconButton onClick={() => onEdit(player.id)} disabled={disableActions} sx={{ color: '#1976d2' }}>
-                        <EditIcon />
-                      </IconButton>
+                      <span>
+                        <IconButton onClick={() => onEdit(player.id)} disabled={disableActions} sx={{ color: '#1976d2' }}>
+                          <EditIcon />
+                        </IconButton>
+                      </span>
                     </Tooltip>
                     <Tooltip title="Remover">
-                      <IconButton onClick={() => onRemove(player.id)} disabled={disableActions} sx={{ color: '#f44336' }}>
-                        <DeleteIcon />
-                      </IconButton>
+                      <span>
+                        <IconButton onClick={() => onRemove(player.id)} disabled={disableActions} sx={{ color: '#f44336' }}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </span>
                     </Tooltip>
                   </TableCell>
                 </TableRow>
