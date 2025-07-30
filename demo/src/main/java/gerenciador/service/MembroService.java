@@ -65,6 +65,14 @@ public class MembroService {
 
     @Transactional
     public void deleteAllMembros() {
+        // Primeiro, limpar todas as relações many-to-many
+        List<Membro> membros = membroRepository.findAll();
+        for (Membro membro : membros) {
+            membro.getPartidas().clear();
+        }
+        membroRepository.saveAll(membros);
+        
+        // Agora deletar todos os membros
         membroRepository.deleteAll();
     }
 

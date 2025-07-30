@@ -29,7 +29,6 @@ export function usePartidas() {
           capacidadeMaximaJogadores: p.capacidadeMaximaJogadores || MAX_ATTACK_PLAYERS
         }));
       setPartidas(formattedPartidas);
-      console.log('Partidas carregadas do backend!');
     } catch (err) {
       console.error('Erro ao buscar partidas:', err);
       toast.error('Falha ao carregar partidas do backend. Recarregue a página.');

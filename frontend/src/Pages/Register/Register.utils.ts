@@ -150,7 +150,7 @@ export const handleCSVUpload = async (
         }
 
         // Mostrar preview
-        console.log("Preview dos dados:", validation.preview);
+
         showSnackbar(`Arquivo válido! ${validation.validLines} membros serão importados.`, "success");
 
         // --- PROCESSAMENTO DOS DADOS VÁLIDOS ---
@@ -228,12 +228,7 @@ export const handleCSVUpload = async (
             showSnackbar(message, severity);
 
             // Log detalhado no console para debug
-            if (result.successNames.length > 0) {
-                console.log("Membros importados com sucesso:", result.successNames);
-            }
-            if (result.skippedNames.length > 0) {
-                console.log("Membros ignorados (já existem):", result.skippedNames);
-            }
+
             if (result.errorMessages.length > 0) {
                 console.error("Erros durante importação:", result.errorMessages);
             }

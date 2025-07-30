@@ -70,7 +70,6 @@ export const movePlayer = (
       break;
     case 'attackTower':
       if (attackTower.length >= MAX_ATTACK_PLAYERS) {
-        console.log("Limite de jogadores na Torre de Ataque atingido.");
         toast.error("Limite de jogadores na Torre de Ataque atingido.");
         return; // Não adiciona se o limite for atingido
       }
@@ -83,7 +82,6 @@ export const movePlayer = (
       }
     case 'defenseTower':
       if (defenseTower.length >= MAX_DEFENSE_PLAYERS) {
-        console.log("Limite de jogadores na Torre de Defesa atingido.");
         toast.error("Limite de jogadores na Torre de Defesa atingido.");
         return; // Não adiciona se o limite for atingido
       }

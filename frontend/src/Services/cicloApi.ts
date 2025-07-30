@@ -22,9 +22,7 @@ export interface CicloVigilia {
 const cicloApi = {
   // Ciclos
   getCiclos: async (): Promise<Ciclo[]> => {
-    console.log('Fazendo requisição para:', API_URL_CICLOS);
     const response = await axios.get(API_URL_CICLOS);
-    console.log('Resposta da API ciclos:', response.data);
     return response.data;
   },
 
@@ -48,7 +46,6 @@ const cicloApi = {
   },
 
   createCiclo: async (nome: string, vigiliaIds: number[]): Promise<Ciclo> => {
-    console.log('Enviando dados para criar ciclo:', { nome, vigiliaIds });
     const response = await axios.post(API_URL_CICLOS, { nome, vigiliaIds });
     return response.data;
   },

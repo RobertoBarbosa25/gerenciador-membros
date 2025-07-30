@@ -26,7 +26,7 @@ public class Partida {
     @Column(nullable = false)
     private Integer capacidadeMaximaJogadores = 8;
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE })
     @JoinTable(
         name = "partida_membros",
         joinColumns = @JoinColumn(name = "partida_id"),

@@ -17,9 +17,6 @@ const membrosApi = {
             if (filters.memberClass) params.append('memberClass', filters.memberClass);
             if (filters.cla) params.append('cla', filters.cla);
             url += `/buscar?${params.toString()}`;
-            console.log('🔍 API: getMembros com filtros:', filters);
-        } else {
-            console.log('📋 API: getMembros sem filtros (todos os membros)');
         }
         const response = await axios.get<Record<string, Player> | Player[]>(url, { signal });
         if (typeof response.data === 'object' && response.data !== null && !Array.isArray(response.data)) {
@@ -62,7 +59,6 @@ const membrosApi = {
     deleteAllMembros: async (): Promise<void> => {
         try {
             await axios.delete(`${API_URL_MEMBROS}/all`);
-            console.log("Todos os membros foram deletados com sucesso no backend.");
         } catch (error) {
             console.error("Erro ao deletar todos os membros:", error);
             throw error;
