@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/gestao/presenca")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173", "https://gerenciador-membros.netlify.app", "https://gerenciador-membros.onrender.com"})
 public class GestaoPresencaController {
     private final GestaoPresencaService service;
     private final MembroRepository membroRepository;

@@ -13,7 +13,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/ciclos")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173"})
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173", "https://chernobyldiablo.netlify.app", "https://gerenciador-membros.onrender.com"})
 public class CicloController {
     private final CicloService service;
 

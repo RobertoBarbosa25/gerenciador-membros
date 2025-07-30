@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api/batch")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:5173", "https://chernobyldiablo.netlify.app", "https://gerenciador-membros.onrender.com"})
 public class BatchController {
 
     private final GestaoVigiliaService gestaoVigiliaService;
