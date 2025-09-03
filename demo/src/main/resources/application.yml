@@ -1,9 +1,29 @@
 # Configurações para produção (usando variáveis de ambiente):
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  main:
+    allow-bean-definition-overriding: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+server:
+  port: ${PORT:8080}
+
+# Configurações para desenvolvimento local:
+# ⚠️ ATENÇÃO: Esta senha é apenas para desenvolvimento local
+# Para produção, use variáveis de ambiente (comentado acima)
 # spring:
 #   datasource:
-#     url: ${SPRING_DATASOURCE_URL}
-#     username: ${SPRING_DATASOURCE_USERNAME}
-#     password: ${SPRING_DATASOURCE_PASSWORD}
+#     url: jdbc:postgresql://localhost:5432/gerenciador_membros
+#     username: postgres
+#     password: 2505  # Senha local - NÃO usar em produção!
 #   main:
 #     allow-bean-definition-overriding: true
 #   jpa:
@@ -13,25 +33,6 @@
 #     properties:
 #       hibernate.format_sql: true
 #       hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+
 # server:
-#   port: ${PORT:8080}
-
-# Configurações para desenvolvimento local:
-# ⚠️ ATENÇÃO: Esta senha é apenas para desenvolvimento local
-# Para produção, use variáveis de ambiente (comentado acima)
-spring:
-  datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/gerenciador_membros}
-    username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD:2505}
-  main:
-    allow-bean-definition-overriding: true
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate.format_sql: true
-
-server:
-  port: ${PORT:8080} 
+#   port: 8080 
