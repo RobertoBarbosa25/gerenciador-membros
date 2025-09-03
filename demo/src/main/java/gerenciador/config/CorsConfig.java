@@ -14,10 +14,13 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
-                registry.addMapping("/api/**") 
-                        .allowedOriginPatterns("*") // Mais permissivo para desenvolvimento
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH") 
-                        .allowedHeaders("*") 
+                registry.addMapping("/api/**")
+                        .allowedOrigins(
+                                "https://chernobyldiablo.netlify.app",
+                                "http://localhost:5173"
+                        )
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
+                        .allowedHeaders("*")
                         .exposedHeaders("Authorization", "Content-Type", "X-Requested-With")
                         .allowCredentials(true)
                         .maxAge(3600); // Cache preflight por 1 hora
